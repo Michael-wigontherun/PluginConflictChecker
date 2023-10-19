@@ -1,4 +1,5 @@
 {
+  "Fallout4": false,
   "PluginTXTPath": "MO2\\profiles\\Default\\plugins.txt",
   "DataFolder": "Skyrim Special Edition\\Data",
   "FilterOutMasterOverrides": true,
@@ -7,7 +8,8 @@
   "FilterSettings": {
     "MinCountToOutput": 20,
     "TypeFilter": [
-      ""
+      "ICell",
+      "IWorldspace"
     ]
   }
 }

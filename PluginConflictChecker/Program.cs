@@ -1,4 +1,5 @@
-﻿using Mutagen.Bethesda.Skyrim;
+﻿using Mutagen.Bethesda.Fallout4;
+using Mutagen.Bethesda.Skyrim;
 
 namespace PluginConflictChecker
 {
@@ -67,7 +68,8 @@ namespace PluginConflictChecker
 
                     try
                     {
-                        LoadPluginData(pluginName);
+                        if (Settings.Fallout4) LoadPluginDataFallout(pluginName);
+                        else LoadPluginDataSkyrim(pluginName);
                     }
                     catch(Exception e)
                     {
@@ -100,12 +102,43 @@ namespace PluginConflictChecker
             Explorer();
         }
 
-        static void LoadPluginData(string pluginName)
+        static void LoadPluginDataSkyrim(string pluginName)
         {
             string path = Path.Combine(Settings.DataFolder, pluginName);
             if(!File.Exists(path)) return;
 
             using ISkyrimModDisposableGetter? mod = SkyrimMod.CreateFromBinaryOverlay(path, SkyrimRelease.SkyrimSE);
+
+            HashSet<string> masters = new();
+            if (Settings.FilterOutMasterOverrides)
+            {
+                foreach (var master in mod.ModHeader.MasterReferences.ToHashSet()) masters.Add(master.Master.ToString().ToLower());
+            }
+
+            foreach (var rec in mod.EnumerateMajorRecords())
+            {
+                if (Settings.FilterSettings.TypeFilter.Contains(rec.Type.Name)) continue;
+
+                string recKey = rec.FormKey.ToString().ToLower();
+                if (!ConflictsByformKeyList.ContainsKey(recKey)) ConflictsByformKeyList.Add(recKey, new HashSet<string>());
+
+                if (!Settings.FilterOutMasterOverrides)
+                {
+                    ConflictsByformKeyList[recKey].Add(pluginName);
+                }
+                else if (DoesNotContainsMasterModKey(recKey, masters))
+                {
+                    ConflictsByformKeyList[recKey].Add(pluginName);
+                }
+            }
+        }
+
+        static void LoadPluginDataFallout(string pluginName)
+        {
+            string path = Path.Combine(Settings.DataFolder, pluginName);
+            if (!File.Exists(path)) return;
+            
+            using var mod = Fallout4Mod.CreateFromBinaryOverlay(path);
 
             HashSet<string> masters = new();
             if (Settings.FilterOutMasterOverrides)

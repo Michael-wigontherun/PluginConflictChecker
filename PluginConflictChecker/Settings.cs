@@ -9,6 +9,8 @@ namespace PluginConflictChecker
         public bool Valid = true;
 
         [JsonInclude]
+        public bool Fallout4 = false;
+        [JsonInclude]
         public string PluginTXTPath { get; set; } = String.Empty;
         [JsonInclude]
         public string DataFolder { get; set; } = String.Empty;
@@ -25,13 +27,16 @@ namespace PluginConflictChecker
         {
             try
             {
-                return JsonSerializer.Deserialize<Settings>(File.ReadAllText("AppSettings.json"))!;
+                return JsonSerializer.Deserialize<Settings>(File.ReadAllText("PluginConflictChecker_AppSettings.json"))!;
             }
             catch (FileNotFoundException)
             {
                 GF.WriteLine("Generating AppSettings.json file.");
                 GF.WriteLine("Please Rerun Program");
-
+                File.WriteAllText("PluginConflictChecker_AppSettings.json", JsonSerializer.Serialize(new Settings(), new JsonSerializerOptions()
+                {
+                    WriteIndented = true
+                }));
                 return new Settings(false);
             }
             catch (Exception e)
