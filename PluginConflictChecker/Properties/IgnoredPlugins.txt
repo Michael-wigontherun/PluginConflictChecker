@@ -1,0 +1,9 @@
+Skyrim.esm
+Update.esm
+Dawnguard.esm
+HearthFires.esm
+Dragonborn.esm
+Unofficial Skyrim Special Edition Patch.esp
+Unofficial Skyrim Modders Patch.esp
+Skyrim Project Optimization - Full ESL Version.esm
+injected record dev reference.esp

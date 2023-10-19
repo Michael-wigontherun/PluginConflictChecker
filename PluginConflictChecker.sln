@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32519.379
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginConflictChecker", "PluginConflictChecker\PluginConflictChecker.csproj", "{BFCFBC12-2154-4440-B94E-EADB9FB702B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BFCFBC12-2154-4440-B94E-EADB9FB702B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFCFBC12-2154-4440-B94E-EADB9FB702B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFCFBC12-2154-4440-B94E-EADB9FB702B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFCFBC12-2154-4440-B94E-EADB9FB702B8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E79642F9-6C64-4A52-AF74-8A18DCDE02FE}
+	EndGlobalSection
+EndGlobal
