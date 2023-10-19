@@ -12,14 +12,14 @@ Plugin Conflict Checker scans each plugin in your load order for what FormIDs ar
 5. Change "PluginTXTPath" to the path to your plugins.txt, This can be the plguins.txt inside "Documents\My Games\Skyrim Special Edition\plugins.txt" or the plugins.txt inside of a MO2 profile
 6. Ensure all \ are doubled in json. Example: "Documents\\My Games\\Skyrim Special Edition\\plugins.txt"
 7. If the instance is for Fallout4, change "Fallout4": false to "Fallout4": true 
-8. Run PluginConflictChecker.exe and let it generate
+8. Run PluginConflictChecker.exe and let it generate the files for your perusing.
 
 Files will be generated inside the Reports folder
 
 ### Additional Settings
 ```
 "FilterOutMasterOverrides"          True will ignore conflicts between a 2 plugins if one requires the other
-"OutputToSeperateFiles"             True will output the main list of plugins and seperated files for each plugin that
+"OutputToSeperateFiles"             True will output the main list of plugins and separated files for each plugin that
                                       conflicts with something
 "Explorer"                          True will open the output folder in Windows Explorer
 "MinCountToOutput"                  Is a integer changing the number will require plugins to have more then the value to be output
