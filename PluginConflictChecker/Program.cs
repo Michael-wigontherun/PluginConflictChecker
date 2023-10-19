@@ -107,7 +107,7 @@ namespace PluginConflictChecker
             string path = Path.Combine(Settings.DataFolder, pluginName);
             if(!File.Exists(path)) return;
 
-            using ISkyrimModDisposableGetter? mod = SkyrimMod.CreateFromBinaryOverlay(path, SkyrimRelease.SkyrimSE);
+            using var mod = SkyrimMod.CreateFromBinaryOverlay(path, SkyrimRelease.SkyrimSE);
 
             HashSet<string> masters = new();
             if (Settings.FilterOutMasterOverrides)
