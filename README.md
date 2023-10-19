@@ -1,5 +1,5 @@
 # PluginConflictChecker
-Plugin Conflict Checker scans each plugin in your load order for what formKeys are present and then checks them against each other for conflicting IDs.
+Plugin Conflict Checker scans each plugin in your load order for what FormIDs are present and then checks them against each other for conflicting IDs.
 
 ## Requirements
 [.Net 6 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
