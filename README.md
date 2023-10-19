@@ -2,10 +2,10 @@
 Plugin Conflict Checker scans each plugin in your load order for what FormIDs are present and then checks them against each other for conflicting IDs.
 
 ## Requirements
-[.Net 6 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+[.Net 6 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
 ## Installion & Usage
-1. Install [.Net 6 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+1. Install [.Net 6 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 2. Unpack the newest release build into a folder outside the Skyrim or Fallout 4's Data folder, You should create two instances of this one for Skyrim, one for Fallout 4
 3. Run the program once to generate the "PluginConflictChecker_AppSettings.json" or download the base PluginConflictChecker_AppSettings.json file
 4. Open "PluginConflictChecker_AppSettings.json" and change the path for "DataFolder" to Skyrim or Fallout 4's Data Folder
