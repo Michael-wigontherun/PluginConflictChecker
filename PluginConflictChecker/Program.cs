@@ -1,7 +1,6 @@
 ﻿using Mutagen.Bethesda.Fallout4;
 using Mutagen.Bethesda.Skyrim;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace PluginConflictChecker
 {
@@ -25,7 +24,7 @@ namespace PluginConflictChecker
             if (!File.Exists(Settings.PluginTXTPath))
             {
                 GF.WriteLine("Could not find the file at PluginTXTPath.");
-                GF.WriteLine("The path should be pointing towards your plugins.txt located at My Games\\Skyrim Special Edition\\plugins.txt,");
+                GF.WriteLine("The path should be pointing towards your plugins.txt located at AppData\\Local\\Skyrim Special Edition\\plugins.txt,");
                 GF.WriteLine("Or a plugins.txt inside your MO2 profile folder.");
                 Settings.Valid = false;
             }
@@ -73,7 +72,6 @@ namespace PluginConflictChecker
                     LoadOrder.Add(pluginName);
 
                     if (IgnoredPlugins.Contains(pluginName, StringComparer.OrdinalIgnoreCase)) continue;
-                    GF.WriteLine(pluginName);
 
                     try
                     {
@@ -88,13 +86,13 @@ namespace PluginConflictChecker
                     }
                 }
 
-                GF.DevWrite("Sorting For Mod Name-------------------------------------------------------");
+                GF.WriteLine("Sorting For Mod Name-------------------------------------------------------");
                 SortForModName();
 
                 Directory.CreateDirectory("Reports");
-                GF.DevWrite("Outputting FormKey List-------------------------------------------------------");
+                GF.WriteLine("Outputting FormKey List-------------------------------------------------------");
                 OutputConflictsByformKeyList();
-                GF.DevWrite("Outputting Plugin List-------------------------------------------------------");
+                GF.WriteLine("Outputting Plugin List-------------------------------------------------------");
                 OutputConflictsByPlugin();
 
                 if (Settings.OutputJson)
@@ -129,6 +127,7 @@ namespace PluginConflictChecker
         static void LoadPluginDataSkyrim(string pluginName)
         {
             GF.DevWrite("Skyrim");
+            GF.WriteLine(pluginName);
             string path = Path.Combine(Settings.DataFolder, pluginName);
             if(!File.Exists(path))
             {
@@ -177,6 +176,7 @@ namespace PluginConflictChecker
         static void LoadPluginDataFallout(string pluginName)
         {
             GF.DevWrite("Fallout 4");
+            GF.WriteLine(pluginName);
             string path = Path.Combine(Settings.DataFolder, pluginName);
             if (!File.Exists(path))
             {
