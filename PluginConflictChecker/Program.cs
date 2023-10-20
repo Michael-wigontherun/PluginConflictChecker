@@ -1,5 +1,7 @@
 ﻿using Mutagen.Bethesda.Fallout4;
 using Mutagen.Bethesda.Skyrim;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace PluginConflictChecker
 {
@@ -85,10 +87,23 @@ namespace PluginConflictChecker
                 OutputConflictsByformKeyList();
                 OutputConflictsByPlugin();
 
-                GF.WriteLine("These plugins could not be fully run:");
-                foreach(string pluginName in ErroredPlugins)
+                if (Settings.OutputJson)
                 {
-                    GF.WriteLine("\t" + pluginName);
+                    var jsonoptions = new JsonSerializerOptions()
+                    {
+                        WriteIndented = true
+                    };
+                    File.WriteAllText("Reports\\FormKeyList.json", JsonSerializer.Serialize(ConflictsByformKeyList, jsonoptions));
+                    File.WriteAllText("Reports\\PluginList.json", JsonSerializer.Serialize(ConflictsByModNames, jsonoptions));
+                }
+
+                if(ErroredPlugins.Count > 0)
+                {
+                    GF.WriteLine("These plugins could not be fully run:");
+                    foreach(string pluginName in ErroredPlugins)
+                    {
+                        GF.WriteLine("\t" + pluginName);
+                    }
                 }
             }
             catch (Exception e)

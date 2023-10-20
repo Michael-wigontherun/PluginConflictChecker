@@ -21,6 +21,8 @@ namespace PluginConflictChecker
         [JsonInclude]
         public bool Explorer = false;
         [JsonInclude]
+        public bool OutputJson = false;
+        [JsonInclude]
         public FilterSettings FilterSettings { get; set; } = new FilterSettings();
 
         public static Settings Load()

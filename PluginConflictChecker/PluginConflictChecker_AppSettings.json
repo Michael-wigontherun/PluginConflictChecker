@@ -4,6 +4,7 @@
   "DataFolder": "Skyrim Special Edition\\Data",
   "FilterOutMasterOverrides": true,
   "OutputToSeperateFiles": false,
+  "OutputJson": false,
   "Explorer": true,
   "FilterSettings": {
     "MinCountToOutput": 20,
