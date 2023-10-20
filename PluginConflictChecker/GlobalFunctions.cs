@@ -11,6 +11,26 @@ namespace PluginConflictChecker
         public static void WriteLine(string line)
         {
             Console.WriteLine(line);
+            if (DevWriteBool)
+            {
+                using (StreamWriter stream = File.AppendText("DevWrite.txt"))
+                {
+                    stream.WriteLine(line);
+                }
+            }
+        }
+
+        public static bool DevWriteBool = false;
+        public static void DevWrite(string line)
+        {
+            if (DevWriteBool)
+            {
+                //Console.WriteLine(line);
+                using (StreamWriter stream = File.AppendText("DevWrite.txt"))
+                {
+                    stream.WriteLine(line);
+                }
+            }
         }
 
         public static void EndProgram()

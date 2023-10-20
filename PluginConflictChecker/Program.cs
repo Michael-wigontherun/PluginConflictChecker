@@ -38,6 +38,13 @@ namespace PluginConflictChecker
 
             IgnoredPlugins = list.ToHashSet();
 
+            if (File.Exists("DevWrite.txt"))
+            {
+                File.Delete("DevWrite.txt");
+                GF.DevWriteBool = true;
+                File.Create("DevWrite.txt").Close();
+            }
+
             if (Directory.Exists("Reports"))
             {
                 Directory.Delete("Reports", true);
@@ -66,7 +73,7 @@ namespace PluginConflictChecker
                     LoadOrder.Add(pluginName);
 
                     if (IgnoredPlugins.Contains(pluginName, StringComparer.OrdinalIgnoreCase)) continue;
-                    Console.WriteLine(pluginName);
+                    GF.WriteLine(pluginName);
 
                     try
                     {
@@ -81,10 +88,13 @@ namespace PluginConflictChecker
                     }
                 }
 
+                GF.DevWrite("Sorting For Mod Name-------------------------------------------------------");
                 SortForModName();
 
                 Directory.CreateDirectory("Reports");
+                GF.DevWrite("Outputting FormKey List-------------------------------------------------------");
                 OutputConflictsByformKeyList();
+                GF.DevWrite("Outputting Plugin List-------------------------------------------------------");
                 OutputConflictsByPlugin();
 
                 if (Settings.OutputJson)
@@ -118,62 +128,95 @@ namespace PluginConflictChecker
 
         static void LoadPluginDataSkyrim(string pluginName)
         {
+            GF.DevWrite("Skyrim");
             string path = Path.Combine(Settings.DataFolder, pluginName);
-            if(!File.Exists(path)) return;
+            if(!File.Exists(path))
+            {
+                GF.DevWrite(pluginName + " Not Found");
+                return;
+            }
 
             using var mod = SkyrimMod.CreateFromBinaryOverlay(path, SkyrimRelease.SkyrimSE);
 
             HashSet<string> masters = new();
             if (Settings.FilterOutMasterOverrides)
             {
+                GF.DevWrite("Loading Masters header");
                 foreach (var master in mod.ModHeader.MasterReferences.ToHashSet()) masters.Add(master.Master.ToString().ToLower());
             }
 
             foreach (var rec in mod.EnumerateMajorRecords())
             {
-                if (Settings.FilterSettings.TypeFilter.Contains(rec.Type.Name)) continue;
+                GF.DevWrite(rec.FormKey.ToString());
+                if (Settings.FilterSettings.TypeFilter.Contains(rec.Type.Name))
+                {
+                    GF.DevWrite("Filtered Out");
+                    continue;
+                }
 
                 string recKey = rec.FormKey.ToString().ToLower();
-                if (!ConflictsByformKeyList.ContainsKey(recKey)) ConflictsByformKeyList.Add(recKey, new HashSet<string>());
+                if (!ConflictsByformKeyList.ContainsKey(recKey))
+                {
+                    ConflictsByformKeyList.Add(recKey, new HashSet<string>());
+                    GF.DevWrite("Adding Key: " + recKey);
+                }
 
                 if (!Settings.FilterOutMasterOverrides)
                 {
                     ConflictsByformKeyList[recKey].Add(pluginName);
+                    GF.DevWrite("Master Overrides: " + recKey + pluginName);
                 }
                 else if (DoesNotContainsMasterModKey(recKey, masters))
                 {
                     ConflictsByformKeyList[recKey].Add(pluginName);
+                    GF.DevWrite("No Master Overrides: " + recKey + pluginName);
                 }
             }
         }
 
         static void LoadPluginDataFallout(string pluginName)
         {
+            GF.DevWrite("Fallout 4");
             string path = Path.Combine(Settings.DataFolder, pluginName);
-            if (!File.Exists(path)) return;
-            
+            if (!File.Exists(path))
+            {
+                GF.DevWrite(pluginName + " Not Found");
+                return;
+            }
+
             using var mod = Fallout4Mod.CreateFromBinaryOverlay(path);
 
             HashSet<string> masters = new();
             if (Settings.FilterOutMasterOverrides)
             {
+                GF.DevWrite("Loading Masters header");
                 foreach (var master in mod.ModHeader.MasterReferences.ToHashSet()) masters.Add(master.Master.ToString().ToLower());
             }
 
             foreach (var rec in mod.EnumerateMajorRecords())
             {
-                if (Settings.FilterSettings.TypeFilter.Contains(rec.Type.Name)) continue;
+                if (Settings.FilterSettings.TypeFilter.Contains(rec.Type.Name))
+                {
+                    GF.DevWrite("Filtered Out");
+                    continue;
+                }
 
                 string recKey = rec.FormKey.ToString().ToLower();
-                if (!ConflictsByformKeyList.ContainsKey(recKey)) ConflictsByformKeyList.Add(recKey, new HashSet<string>());
+                if (!ConflictsByformKeyList.ContainsKey(recKey))
+                {
+                    ConflictsByformKeyList.Add(recKey, new HashSet<string>());
+                    GF.DevWrite("Adding Key: " + recKey);
+                }
 
                 if (!Settings.FilterOutMasterOverrides)
                 {
                     ConflictsByformKeyList[recKey].Add(pluginName);
+                    GF.DevWrite("Master Overrides: " + recKey + pluginName);
                 }
                 else if (DoesNotContainsMasterModKey(recKey, masters))
                 {
                     ConflictsByformKeyList[recKey].Add(pluginName);
+                    GF.DevWrite("No Master Overrides: " + recKey + pluginName);
                 }
             }
         }
@@ -203,13 +246,31 @@ namespace PluginConflictChecker
             {
                 foreach (string pluginName1 in formkeypair.Value)
                 {
-                    if (!ConflictsByModNames.ContainsKey(pluginName1)) ConflictsByModNames.Add(pluginName1, new Dictionary<string, int>());
+                    GF.DevWrite(pluginName1);
+                    if (!ConflictsByModNames.ContainsKey(pluginName1))
+                    {
+                        GF.DevWrite("Adding Key");
+                        ConflictsByModNames.Add(pluginName1, new Dictionary<string, int>());
+                    }
 
                     foreach (var pluginName2 in formkeypair.Value)
                     {
-                        if (pluginName1.Equals(pluginName2)) continue;
-                        if (!ConflictsByModNames[pluginName1].ContainsKey(pluginName2)) ConflictsByModNames[pluginName1].Add(pluginName2, 1);
-                        else ConflictsByModNames[pluginName1][pluginName2]++;
+                        GF.DevWrite(pluginName2);
+                        if (pluginName1.Equals(pluginName2, StringComparison.OrdinalIgnoreCase))
+                        {
+                            GF.DevWrite("Ignoring Plugin Match");
+                            continue;
+                        }
+                        if (!ConflictsByModNames[pluginName1].ContainsKey(pluginName2))
+                        {
+                            GF.DevWrite("Adding Key"); 
+                            ConflictsByModNames[pluginName1].Add(pluginName2, 1);
+                        }
+                        else
+                        {
+                            GF.DevWrite("Iterating Conflict");
+                            ConflictsByModNames[pluginName1][pluginName2]++;
+                        }
                     }
 
                 }
@@ -221,11 +282,14 @@ namespace PluginConflictChecker
             using StreamWriter sw = new("Reports\\FormKeyList.txt", false);
             foreach (var formkeypair in ConflictsByformKeyList)
             {
+                GF.DevWrite(formkeypair.Key);
                 if (formkeypair.Value.Count > 1)
                 {
+                    GF.DevWrite("Writing " + formkeypair.Key);
                     sw.WriteLine(formkeypair.Key);
                     foreach (var kvp in formkeypair.Value)
                     {
+                        GF.DevWrite("Writing " + kvp);
                         sw.WriteLine("\t" + kvp);
                     }
                 }
@@ -242,12 +306,15 @@ namespace PluginConflictChecker
 
             foreach (KeyValuePair<string, Dictionary<string, int>> formKeyPair in ConflictsByModNames)
             {
+                GF.DevWrite(formKeyPair.Key);
                 ConflictsByModName plugin = new(formKeyPair);
                 if (plugin.Conflicts.Count > 0)
                 {
+                    GF.DevWrite("Writing " + plugin.PluginName);
                     single.WriteLine(plugin.PluginName);
                     foreach (var conflict in plugin.Conflicts)
                     {
+                        GF.DevWrite("Writing " + "\t" + conflict.PluginName + " : " + conflict.number + " Conflicts.");
                         single.WriteLine("\t" + conflict.PluginName + " : " + conflict.number + " Conflicts.");
                     }
 
@@ -255,9 +322,11 @@ namespace PluginConflictChecker
 
                     using (StreamWriter Multiple = new($"Reports\\SeperatedPluginLists\\{plugin.PluginName}.txt", false))
                     {
+                        GF.DevWrite("Writing Multi File " + formKeyPair.Key);
                         Multiple.WriteLine(plugin.PluginName);
                         foreach (var conflict in plugin.Conflicts)
                         {
+                            GF.DevWrite("Writing Multi File " + "\t" + conflict.PluginName + " : " + conflict.number + " Conflicts.");
                             Multiple.WriteLine("\t" + conflict.PluginName + " : " + conflict.number + " Conflicts.");
                         }
                     }
