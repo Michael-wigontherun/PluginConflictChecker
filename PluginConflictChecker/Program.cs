@@ -58,6 +58,7 @@ namespace PluginConflictChecker
             {
                 if (!StartUp())
                 {
+                    GF.WriteLine(Settings.LoadError);
                     GF.EndProgram();
                     return;
                 }
@@ -147,7 +148,7 @@ namespace PluginConflictChecker
             foreach (var rec in mod.EnumerateMajorRecords())
             {
                 GF.DevWrite(rec.FormKey.ToString());
-                if (Settings.FilterSettings.TypeFilter.Contains(rec.Type.Name))
+                if (Settings.FilterSettings.TypeFilter.Contains(rec.Type.Name) != Settings.FilterSettings.OnlyIncludeTypeFilter)
                 {
                     GF.DevWrite("Filtered Out");
                     continue;
@@ -195,7 +196,7 @@ namespace PluginConflictChecker
 
             foreach (var rec in mod.EnumerateMajorRecords())
             {
-                if (Settings.FilterSettings.TypeFilter.Contains(rec.Type.Name))
+                if (Settings.FilterSettings.TypeFilter.Contains(rec.Type.Name) != Settings.FilterSettings.OnlyIncludeTypeFilter)
                 {
                     GF.DevWrite("Filtered Out");
                     continue;
