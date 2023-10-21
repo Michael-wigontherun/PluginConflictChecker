@@ -26,4 +26,6 @@ Files will be generated inside the Reports folder
 "TypeFilter"                        Is a string list, add Mutegen Major Record interface types to this list to remove them
                                       from the conflict count, See Major Record Interfaces.txt for a list, Cell
                                       and Worldspace Records are already added
+"OnlyIncludeTypeFilter"             True will make "TypeFilter" only register conflicts of conflicts of of
+                                      that particular type or types
 ```
