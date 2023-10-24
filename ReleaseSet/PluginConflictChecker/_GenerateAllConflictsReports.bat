@@ -1,0 +1,2 @@
+PluginConflictChecker.exe
+PluginConflictChecker_LocateMergeJson.exe -run

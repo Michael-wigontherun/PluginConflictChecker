@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginConflictChecker", "PluginConflictChecker\PluginConflictChecker.csproj", "{BFCFBC12-2154-4440-B94E-EADB9FB702B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginConflictChecker", "PluginConflictChecker\PluginConflictChecker.csproj", "{BFCFBC12-2154-4440-B94E-EADB9FB702B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginConflictChecker_CreateZMergeInstance", "PluginConflictChecker_CreateZMergeInstance\PluginConflictChecker_CreateZMergeInstance.csproj", "{90917E72-B371-402D-80D6-5567F6942ACC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginConflictChecker_LocateMergeJson", "PluginConflictChecker_LocateMergeJson\PluginConflictChecker_LocateMergeJson.csproj", "{0A992F47-0A8E-46B6-907A-516990E2634E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{BFCFBC12-2154-4440-B94E-EADB9FB702B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFCFBC12-2154-4440-B94E-EADB9FB702B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFCFBC12-2154-4440-B94E-EADB9FB702B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90917E72-B371-402D-80D6-5567F6942ACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90917E72-B371-402D-80D6-5567F6942ACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90917E72-B371-402D-80D6-5567F6942ACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90917E72-B371-402D-80D6-5567F6942ACC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A992F47-0A8E-46B6-907A-516990E2634E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A992F47-0A8E-46B6-907A-516990E2634E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A992F47-0A8E-46B6-907A-516990E2634E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A992F47-0A8E-46B6-907A-516990E2634E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

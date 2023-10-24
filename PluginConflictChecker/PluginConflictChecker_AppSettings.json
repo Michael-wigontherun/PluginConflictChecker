@@ -1,8 +1,9 @@
 {
-  "Version": "1.4",
+  "Version": "1.5",
   "Fallout4": false,
   "PluginTXTPath": "MO2\\profiles\\Default\\plugins.txt",
   "DataFolder": "Skyrim Special Edition\\Data",
+  "OutputName": "",
   "FilterOutMasterOverrides": true,
   "OutputToSeperateFiles": false,
   "OutputJson": false,

@@ -5,7 +5,7 @@ namespace PluginConflictChecker
 {
     public class Settings
     {
-        public static readonly string SettingsVersion = "1.4";
+        public static readonly string SettingsVersion = "1.5";
         [JsonIgnore]
         public bool Valid = true;
         [JsonIgnore]
@@ -20,26 +20,28 @@ namespace PluginConflictChecker
         [JsonInclude, JsonPropertyOrder(order: 4)]
         public string DataFolder { get; set; } = String.Empty;
         [JsonInclude, JsonPropertyOrder(order: 5)]
-        public bool FilterOutMasterOverrides = true;
+        public string OutputName { get; set; } = String.Empty;//1.5
         [JsonInclude, JsonPropertyOrder(order: 6)]
-        public bool OutputToSeperateFiles = false;
+        public bool FilterOutMasterOverrides = true;
         [JsonInclude, JsonPropertyOrder(order: 7)]
-        public bool Explorer = false;
+        public bool OutputToSeperateFiles = false;
         [JsonInclude, JsonPropertyOrder(order: 8)]
-        public bool OutputJson = false;
+        public bool Explorer = false;
         [JsonInclude, JsonPropertyOrder(order: 9)]
+        public bool OutputJson = false;
+        [JsonInclude, JsonPropertyOrder(order: 10)]
         public FilterSettings FilterSettings { get; set; } = new FilterSettings();
 
-        public static Settings Load()
+        public static Settings Load(string path = "PluginConflictChecker_AppSettings.json")
         {
             try
             {
-                Settings settings = JsonSerializer.Deserialize<Settings>(File.ReadAllText("PluginConflictChecker_AppSettings.json"))!;
+                Settings settings = JsonSerializer.Deserialize<Settings>(File.ReadAllText(path))!;
                 if (settings.Version.Equals(SettingsVersion)) return settings;
 
                 settings.Valid = false;
                 settings.Version = SettingsVersion;
-                File.WriteAllText("PluginConflictChecker_AppSettings.json", JsonSerializer.Serialize(settings, new JsonSerializerOptions()
+                File.WriteAllText(path, JsonSerializer.Serialize(settings, new JsonSerializerOptions()
                 {
                     WriteIndented = true
                 }));
@@ -53,7 +55,7 @@ namespace PluginConflictChecker
                 GF.WriteLine("Please Rerun Program");
                 Settings settings = new();
                 settings.Version = SettingsVersion;
-                File.WriteAllText("PluginConflictChecker_AppSettings.json", JsonSerializer.Serialize(settings, new JsonSerializerOptions()
+                File.WriteAllText(path, JsonSerializer.Serialize(settings, new JsonSerializerOptions()
                 {
                     WriteIndented = true
                 }));
@@ -68,6 +70,14 @@ namespace PluginConflictChecker
 
                 return new Settings(false);
             }
+        }
+
+        public void Write(string path)
+        {
+            File.WriteAllText(path, JsonSerializer.Serialize(this, new JsonSerializerOptions()
+            {
+                WriteIndented = true
+            }));
         }
 
         public Settings() { }

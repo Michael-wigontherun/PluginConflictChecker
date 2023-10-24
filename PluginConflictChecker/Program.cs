@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace PluginConflictChecker
 {
-    internal class Program
+    public static class Program
     {
         public static Settings Settings = new Settings(false);
 
@@ -13,14 +13,26 @@ namespace PluginConflictChecker
         static HashSet<string> ErroredPlugins = new();
 
         //                FormKey, Plugin List
-        static Dictionary<string, HashSet<string>> ConflictsByformKeyList = new();
+        public static Dictionary<string, HashSet<string>> ConflictsByformKeyList = new();
 
         //               Plugin Name, Conflicting Mod Name, Conflict Numbers
-        static Dictionary<string    , Dictionary<string   , int>> ConflictsByModNames = new();
+        public static Dictionary<string    , Dictionary<string   , int>> ConflictsByModNames = new();
 
-        static bool StartUp()
+        static bool StartUp(string[] args)
         {
-            Settings = Settings.Load();
+            if (args.Length == 1)
+            {
+                if (File.Exists(args[0]))
+                {
+                    Settings = Settings.Load(args[0]);
+                }
+                else if(args[0].Equals("-np", StringComparison.OrdinalIgnoreCase))
+                {
+                    GF.NoPause = true;
+                }
+            }
+            else Settings = Settings.Load();
+
             if (!File.Exists(Settings.PluginTXTPath))
             {
                 GF.WriteLine("Could not find the file at PluginTXTPath.");
@@ -28,7 +40,6 @@ namespace PluginConflictChecker
                 GF.WriteLine("Or a plugins.txt inside your MO2 profile folder.");
                 Settings.Valid = false;
             }
-
             List<string> list = new List<string>();
 
             if (File.Exists("Properties\\IgnoredPlugins.txt")) list.AddRange(File.ReadAllLines("Properties\\IgnoredPlugins.txt"));
@@ -44,19 +55,14 @@ namespace PluginConflictChecker
                 File.Create("DevWrite.txt").Close();
             }
 
-            if (Directory.Exists("Reports"))
-            {
-                Directory.Delete("Reports", true);
-            }
-
             return Settings.Valid;
         }
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             try
             {
-                if (!StartUp())
+                if (!StartUp(args))
                 {
                     GF.WriteLine(Settings.LoadError);
                     GF.EndProgram();
@@ -102,8 +108,8 @@ namespace PluginConflictChecker
                     {
                         WriteIndented = true
                     };
-                    File.WriteAllText("Reports\\FormKeyList.json", JsonSerializer.Serialize(ConflictsByformKeyList, jsonoptions));
-                    File.WriteAllText("Reports\\PluginList.json", JsonSerializer.Serialize(ConflictsByModNames, jsonoptions));
+                    File.WriteAllText($"Reports\\{Settings.OutputName}FormKeyList.json", JsonSerializer.Serialize(ConflictsByformKeyList, jsonoptions));
+                    File.WriteAllText($"Reports\\{Settings.OutputName}PluginList.json", JsonSerializer.Serialize(ConflictsByModNames, jsonoptions));
                 }
 
                 if(ErroredPlugins.Count > 0)
@@ -128,13 +134,13 @@ namespace PluginConflictChecker
         static void LoadPluginDataSkyrim(string pluginName)
         {
             GF.DevWrite("Skyrim");
-            GF.WriteLine(pluginName);
             string path = Path.Combine(Settings.DataFolder, pluginName);
             if(!File.Exists(path))
             {
                 GF.DevWrite(pluginName + " Not Found");
                 return;
             }
+            GF.WriteLine(pluginName);
 
             using var mod = SkyrimMod.CreateFromBinaryOverlay(path, SkyrimRelease.SkyrimSE);
 
@@ -177,13 +183,13 @@ namespace PluginConflictChecker
         static void LoadPluginDataFallout(string pluginName)
         {
             GF.DevWrite("Fallout 4");
-            GF.WriteLine(pluginName);
             string path = Path.Combine(Settings.DataFolder, pluginName);
             if (!File.Exists(path))
             {
                 GF.DevWrite(pluginName + " Not Found");
                 return;
             }
+            GF.WriteLine(pluginName);
 
             using var mod = Fallout4Mod.CreateFromBinaryOverlay(path);
 
@@ -280,7 +286,8 @@ namespace PluginConflictChecker
 
         static void OutputConflictsByformKeyList()
         {
-            using StreamWriter sw = new("Reports\\FormKeyList.txt", false);
+            string outputName = $"Reports\\{Settings.OutputName}FormKeyList.txt";
+            using StreamWriter sw = new(outputName, false);
             foreach (var formkeypair in ConflictsByformKeyList)
             {
                 GF.DevWrite(formkeypair.Key);
@@ -301,9 +308,11 @@ namespace PluginConflictChecker
 
         static void OutputConflictsByPlugin()
         {
-            using StreamWriter single = new("Reports\\PluginList.txt", false);
+            string outputName = $"Reports\\{Settings.OutputName}PluginList.txt";
+            using StreamWriter single = new(outputName, false);
 
-            if (Settings.OutputToSeperateFiles) Directory.CreateDirectory("Reports\\SeperatedPluginLists");
+            string multiDirectoryPath = $"Reports\\SeperatedPluginLists{Settings.OutputName}";
+            if (Settings.OutputToSeperateFiles) Directory.CreateDirectory(multiDirectoryPath);
 
             foreach (KeyValuePair<string, Dictionary<string, int>> formKeyPair in ConflictsByModNames)
             {
@@ -321,7 +330,7 @@ namespace PluginConflictChecker
 
                     if (!Settings.OutputToSeperateFiles) continue;
 
-                    using (StreamWriter Multiple = new($"Reports\\SeperatedPluginLists\\{plugin.PluginName}.txt", false))
+                    using (StreamWriter Multiple = new($"{multiDirectoryPath}\\{plugin.PluginName}.txt", false))
                     {
                         GF.DevWrite("Writing Multi File " + formKeyPair.Key);
                         Multiple.WriteLine(plugin.PluginName);
@@ -336,9 +345,10 @@ namespace PluginConflictChecker
             }
         }
 
-        static void Explorer()
+        public static bool NoExplorer = false;
+        public static void Explorer()
         {
-            if (Settings.Explorer)
+            if (Settings.Explorer && !NoExplorer)
             {
                 System.Diagnostics.Process.Start("explorer.exe", "\"" + Path.GetFullPath("Reports") + "\"");
             }

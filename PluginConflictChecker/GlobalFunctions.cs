@@ -33,8 +33,10 @@ namespace PluginConflictChecker
             }
         }
 
+        public static bool NoPause = false;
         public static void EndProgram()
         {
+            if (NoPause) return;
             Console.WriteLine("Press Enter to Close...");
             Console.ReadLine();
         }
